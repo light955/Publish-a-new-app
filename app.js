@@ -54,7 +54,7 @@ app.get('/', function(req, res){
 
 
 
-server.listen(3000, () => console.log('app listening on port 3000!'))
+server.listen(process.env.PORT || 3000, () => console.log('app listening on port 3000!'))
 
 
 let obj = {name:"力斗",age:29}
