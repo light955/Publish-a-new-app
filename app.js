@@ -40,8 +40,6 @@ io.on('connection', function(socket) {
 })
 
 
-
-
 //viewエンジンをejsであることを設定
 app.set("view engine", "ejs");
 
@@ -55,13 +53,4 @@ app.get('/', function(req, res){
 
 
 server.listen(process.env.PORT || 3000, () => console.log('app listening on port 3000!'))
-
-
-let obj = {name:"力斗",age:29}
-
-obj.weight = 68;
-
-console.log(obj)
-
-
 
