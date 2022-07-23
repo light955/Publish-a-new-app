@@ -1,6 +1,5 @@
 const express = require('express');
 const http = require('http');
-const path = require('path');
 const socketIO = require('socket.io');
 const app = express();
 const server = http.Server(app);
@@ -8,10 +7,7 @@ const io = socketIO(server);
 
 
 
-
-
 let count = 0;
-let idid = 0;
 
 
 
@@ -31,11 +27,6 @@ io.on('connection', function(socket) {
     io.emit("own_piece_response", x,y,own_piece_id);
 
   })
-
-
-  
-  
-
 
 })
 
