@@ -127,7 +127,7 @@
 
         console.log("<%= count %>")
 
-        if(Number("<%= count %>") === 2){
+        if(Number("<%= count %>")%2 === 0){
             h1 = document.getElementById('h1')
             h1.style.color = "#f00";
             ban.style.transform = "rotate(180deg)"
