@@ -22,7 +22,7 @@
         vertical-align: middle;
         table-layout: fixed;
         padding: 1px 1px 1px 1px;
-        font-size: 33px;
+        font-size: 40px;
         writing-mode: horizontal-tb;
         }
 
@@ -41,7 +41,7 @@
             vertical-align: middle;
             table-layout: fixed;
             padding: 1px 1px 1px 1px;
-            font-size: 10px;
+            font-size: 20px;
             writing-mode: horizontal-tb;
             }
     
@@ -63,7 +63,7 @@
             vertical-align: middle;
             table-layout: fixed;
             padding: 1px 1px 1px 1px;
-            font-size: 10px;
+            font-size: 20px;
             writing-mode: horizontal-tb;
             }
 
@@ -370,6 +370,7 @@
                     for (var x = 0; x < 5; x++) {
                         for (var y = 0; y < 5; y++) {
                             if(!(g.innerText==="")){
+                                g.style.color = "#000";
                                 if(g.style.transform === "rotate(180deg)"){
                                     if(ban2.rows[x].cells[y].innerText===""){
                                         ban2.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
