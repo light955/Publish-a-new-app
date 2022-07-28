@@ -30,9 +30,13 @@ io.emit("own_piece_response", x,y,own_piece_id);
 
 })
 
+app.use(express.static('public'));
+
 
 //viewエンジンをejsであることを設定
 app.set("view engine", "ejs");
+
+
 
 
 

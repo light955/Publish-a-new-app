@@ -81,6 +81,7 @@
 </style>
 <body>
     <h1 id="h1">将棋で遊ぼう</h1>
+    <img src="/img/syougi2.jpg" alt="">
 
     <div id="div_red">タイトルが赤色のplayer用</div>
     <table id="field_1" class="own_piece">
@@ -119,7 +120,7 @@
         var own_piece = document.getElementsByClassName('own_piece')
 
 
-        
+
 
 
 
@@ -292,15 +293,17 @@
 
 
 
+                            
                             //成りの処理
                             if(first_choice_piece.style.transform === "rotate(0deg)"){
                                 for (var x = 0; x < 3; x++) {
                                     for (var y = 0; y < 9; y++) {
-                                        if(ban.rows[idid].cells[idid2]===ban.rows[x].cells[y]){
-                                            ban.rows[idid].cells[idid2].innerText=naru(first_choice_piece.innerText)
-                                            ban.rows[idid].cells[idid2].style.color = '#f00';
-            
-
+                                        if(ban.rows[idid].cells[idid2]===ban.rows[x].cells[y]&& !(first_choice_piece.style.color === "rgb(255, 0, 0)")
+                                        ||first_choice_piece===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")){
+                                            if(window.confirm("成りますか？")){
+                                                ban.rows[idid].cells[idid2].innerText=naru(first_choice_piece.innerText)
+                                                ban.rows[idid].cells[idid2].style.color = '#f00';
+                                            }
                                         }
                                         
                                     }
@@ -311,11 +314,12 @@
                             if(first_choice_piece.style.transform === "rotate(180deg)"){
                                 for (var x = 6; x < 9; x++) {
                                     for (var y = 0; y < 9; y++) {
-                                        if(ban.rows[idid].cells[idid2]===ban.rows[x].cells[y]){
-                                            ban.rows[idid].cells[idid2].innerText=naru(first_choice_piece.innerText)
-                                            ban.rows[idid].cells[idid2].style.color = '#f00';
-            
-
+                                        if(ban.rows[idid].cells[idid2]===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")
+                                        ||first_choice_piece===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")){
+                                            if(window.confirm("成りますか？")){
+                                                ban.rows[idid].cells[idid2].innerText=naru(first_choice_piece.innerText)
+                                                ban.rows[idid].cells[idid2].style.color = '#f00';
+                                            }
                                         }
                                         
                                     }
