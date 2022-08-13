@@ -81,7 +81,15 @@
 </style>
 <body>
     <h1 id="h1">将棋で遊ぼう</h1>
+    <button id="button"></button>
+    <button id="button2"></button>
     <img src="/img/syougi2.jpg" alt="">
+
+    <form action="/form" method="post">
+        <input type="text" name="message">
+        <input type="submit" value="作成する">
+
+
 
     <div id="div_red">タイトルが赤色のplayer用</div>
     <table id="field_1" class="own_piece">
@@ -262,7 +270,19 @@
                         };
                         }
     //
-            
+    
+    button.addEventListener("click",function(){
+        socket.emit("button")
+
+    })
+
+    button2.addEventListener("click",function(){
+        socket.emit("button2")
+    })
+
+
+
+
                     
                     
                     //banから動かす処理
@@ -295,15 +315,21 @@
 
                             
                             //成りの処理
+                            outer:
                             if(first_choice_piece.style.transform === "rotate(0deg)"){
                                 for (var x = 0; x < 3; x++) {
                                     for (var y = 0; y < 9; y++) {
                                         if(ban.rows[idid].cells[idid2]===ban.rows[x].cells[y]&& !(first_choice_piece.style.color === "rgb(255, 0, 0)")
                                         ||first_choice_piece===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")){
-                                            if(window.confirm("成りますか？")){
-                                                ban.rows[idid].cells[idid2].innerText=naru(first_choice_piece.innerText)
-                                                ban.rows[idid].cells[idid2].style.color = '#f00';
-                                            }
+                                            button = document.getElementById("button")
+                                            button2 = document.getElementById("button2")
+                                            button.innerText = "はい";
+                                            button2.innerText = "いいえ";
+                                            break outer;
+
+
+
+                                            
                                         }
                                         
                                     }
@@ -311,15 +337,19 @@
 
                             }
 
+                            outer:
                             if(first_choice_piece.style.transform === "rotate(180deg)"){
                                 for (var x = 6; x < 9; x++) {
                                     for (var y = 0; y < 9; y++) {
                                         if(ban.rows[idid].cells[idid2]===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")
                                         ||first_choice_piece===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")){
-                                            if(window.confirm("成りますか？")){
-                                                ban.rows[idid].cells[idid2].innerText=naru(first_choice_piece.innerText)
-                                                ban.rows[idid].cells[idid2].style.color = '#f00';
-                                            }
+                                                button = document.getElementById("button")
+                                                button2 = document.getElementById("button2")
+                                                button.innerText = "はい";
+                                                button2.innerText = "いいえ";
+                                                break outer;
+    
+                                            
                                         }
                                         
                                     }
@@ -330,14 +360,22 @@
 
 
 
+
+
+                            
+
+
+
                             //選択された駒が成っている駒の場合は次の選択された駒は赤色
-                            if(first_choice_piece.style.color==="rgb(255, 0, 0)"){
+                        if(first_choice_piece.style.color==="rgb(255, 0, 0)"){
                                 ban.rows[idid].cells[idid2].style.color = '#f00';
                                 first_choice_piece.style.color = "#000";
 
                             }
 
                             //共通処理
+                            saveonce = first_choice_piece.innerText;
+                            saveonce2 =ban.rows[idid].cells[idid2]
                             first_choice_piece.innerText = "";
                             first_choice_piece.style.backgroundColor = '#c84';
                             //
@@ -346,7 +384,7 @@
             
                         }
 
-                    })//
+                })//socketの終わり
 
 
                 //成る関数
@@ -436,12 +474,14 @@
                             ban1.rows[x].cells[y].style.backgroundColor = '#CCFFFF';
                             ban1.rows[x].cells[y].id = "field_td1";
                             first_choice_piece=ban1.rows[x].cells[y]
+                            console.log(first_choice_piece)
     
                         }
                         if(own_piece_id==="field_2"){
                             ban2.rows[x].cells[y].style.backgroundColor = '#CCFFFF';
                             ban2.rows[x].cells[y].id = "field_td2";
                             first_choice_piece=ban2.rows[x].cells[y]
+                            console.log(first_choice_piece)
     
                         }
     
@@ -449,13 +489,31 @@
                     }
 
 
-
                 })
 
-                      
-        
-      
-    </script>
+                                        //ボタンをclickしたらなる処理
+
+                    socket.on("button_response",()=>{
+                        console.log(saveonce);
+                        console.log(saveonce2);
+                        saveonce2.innerText=naru(saveonce)
+                        saveonce2.style.color = '#f00';
+                        button.innerText = "";
+                        button2.innerText = "";
+                    })
+
+
+
+                    socket.on("button_response2",()=>{
+                        console.log("ぼたん削除")
+                        button.innerText = "";
+                        button2.innerText = "";
+                    })
+                
+
+
+                
+                </script>
 
 
     

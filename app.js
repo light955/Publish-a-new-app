@@ -15,8 +15,6 @@ io.on('connection', function(socket) {
 console.log("接続しました")
 
 socket.on("idid",(idid,idid2)=>{
-console.log(idid)
-console.log(idid2)
 
 io.emit("rrr", idid,idid2);
 
@@ -27,6 +25,21 @@ socket.on("own_piece",(x,y,own_piece_id)=>{
 io.emit("own_piece_response", x,y,own_piece_id);
 
 })
+
+socket.on("button",()=>{
+    console.log("buttonを送信するばい")
+    io.emit("button_response")
+})
+
+socket.on("button2",()=>{
+    console.log("button2を送信するばい")
+    io.emit("button_response2")
+})
+
+
+
+
+
 
 })
 
@@ -44,6 +57,8 @@ app.get('/', function(req, res){
 count++
 res.render("landing", {count: count});
 });
+
+
 
 
 
