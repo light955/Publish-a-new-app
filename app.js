@@ -38,9 +38,6 @@ socket.on("button2",()=>{
 
 
 
-
-
-
 })
 
 app.use(express.static('public'));
@@ -57,6 +54,14 @@ app.get('/', function(req, res){
 count++
 res.render("landing", {count: count});
 });
+
+//あそび
+
+app.get('/rrr', function(req, res){
+    res.send("rrrばい");
+    });
+    
+
 
 
 
