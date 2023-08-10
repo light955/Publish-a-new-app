@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>将棋</title>
 </head>
 
 <style>
-    #field{
-        transform:rotate(0deg);    /* 中心を基準点に時計回りに回転する */
+    #field {
+        transform: rotate(0deg);
+        /* 中心を基準点に時計回りに回転する */
         margin: 0 auto;
     }
-    
+
     #field td {
         border: 1px solid black;
         width: 50px;
@@ -24,61 +25,58 @@
         padding: 1px 1px 1px 1px;
         font-size: 40px;
         writing-mode: horizontal-tb;
-        }
+    }
 
-        #field_1{
-            width: 200px;
-            height: 150px;
-            float: left;
-        }
+    #field_1 {
+        width: 200px;
+        height: 150px;
+        float: left;
+    }
 
-        #field_1 td {
-            border: 1px solid black;
-            width: 10px;
-            height: 10px;
-            background-color: #c84;
-            text-align: center;
-            vertical-align: middle;
-            table-layout: fixed;
-            padding: 1px 1px 1px 1px;
-            font-size: 20px;
-            writing-mode: horizontal-tb;
-            }
-    
-    
-
-        
-        #field_2{
-            width: 200px;
-            height: 150px;
-            float: right;
-        }
-
-        #field_2 td {
-            border: 1px solid black;
-            width: 10px;
-            height: 10px;
-            background-color: #c84;
-            text-align: center;
-            vertical-align: middle;
-            table-layout: fixed;
-            padding: 1px 1px 1px 1px;
-            font-size: 20px;
-            writing-mode: horizontal-tb;
-            }
-
-        #div{
-            float: right;
-        }
-
-        #div_red{
-            color: #f00;
-        }
+    #field_1 td {
+        border: 1px solid black;
+        width: 10px;
+        height: 10px;
+        background-color: #c84;
+        text-align: center;
+        vertical-align: middle;
+        table-layout: fixed;
+        padding: 1px 1px 1px 1px;
+        font-size: 20px;
+        writing-mode: horizontal-tb;
+    }
 
 
 
-    
+
+    #field_2 {
+        width: 200px;
+        height: 150px;
+        float: right;
+    }
+
+    #field_2 td {
+        border: 1px solid black;
+        width: 10px;
+        height: 10px;
+        background-color: #c84;
+        text-align: center;
+        vertical-align: middle;
+        table-layout: fixed;
+        padding: 1px 1px 1px 1px;
+        font-size: 20px;
+        writing-mode: horizontal-tb;
+    }
+
+    #div {
+        float: right;
+    }
+
+    #div_red {
+        color: #f00;
+    }
 </style>
+
 <body>
     <h1 id="h1">将棋で遊ぼう</h1>
     <button id="button"></button>
@@ -91,432 +89,417 @@
 
 
 
-    <div id="div_red">タイトルが赤色のplayer用</div>
-    <table id="field_1" class="own_piece">
-    </table>
-    
-
-
-    <table id="field"></table>
-
-    <div id="div">タイトルが黒色のplayer用</div>
-    <table id="field_2" class="own_piece">
-
-    </table>
+        <div id="div_red">タイトルが赤色のplayer用</div>
+        <table id="field_1" class="own_piece">
+        </table>
 
 
 
-    <!-- 発言ログ -->
-<ul id="msglist">
-</ul>
+        <table id="field"></table>
+
+        <div id="div">タイトルが黒色のplayer用</div>
+        <table id="field_2" class="own_piece">
+
+        </table>
+        <!-- 発言ログ -->
+        <ul id="msglist">
+        </ul>
+        <script src="/socket.io/socket.io.js"></script>
 
 
 
+        <script>
+            const socket = io();
+
+            var ban = document.getElementById('field')
+            var ban1 = document.getElementById('field_1')
+            var ban2 = document.getElementById('field_2')
+
+            var own_piece = document.getElementsByClassName('own_piece')
+            console.log("<%= count %>")
+
+            if (Number("<%= count %>") % 2 === 0) {
+                h1 = document.getElementById('h1')
+                h1.style.color = "#f00";
+                ban.style.transform = "rotate(180deg)"
+
+            } else {
+                ban.style.transform = "rotate(0deg)"
+            }
 
 
-    <script src="/socket.io/socket.io.js"></script>
-
-
-
-    <script>
-        const socket = io();
-
-        var ban = document.getElementById('field')
-        var ban1 = document.getElementById('field_1')
-        var ban2 = document.getElementById('field_2')
-
-        var own_piece = document.getElementsByClassName('own_piece')
-
-
-
-
-
-
-
-
-        console.log("<%= count %>")
-
-        if(Number("<%= count %>")%2 === 0){
-            h1 = document.getElementById('h1')
-            h1.style.color = "#f00";
-            ban.style.transform = "rotate(180deg)"
-
-        }else{
-            ban.style.transform = "rotate(0deg)"
-        }
-
-        
-        let click_step  = 0;
-        let tttt;
+            let click_step = 0;
+            let tttt;
 
 
             // テーブルで盤面を作成する処理
 
-    for (var x = 0; x < 9; x++) {
-        var tr = document.createElement("tr")
-        ban.appendChild(tr)
-        for (var y = 0; y < 9; y++) {
-        var td = document.createElement("td")
-        tr.appendChild(td)
-        }
-        }
-
-
-    //手前の駒
-    for(var x=0; x<9; x++){
-
-        ban.rows[6].cells[x].innerText = "歩";
-
-    }
-
-    ban.rows[7].cells[1].innerText = "角";
-    ban.rows[7].cells[7].innerText = "飛";
-    ban.rows[8].cells[0].innerText = "香";
-    ban.rows[8].cells[1].innerText = "桂";
-    ban.rows[8].cells[2].innerText = "銀";
-    ban.rows[8].cells[3].innerText = "金";
-    ban.rows[8].cells[4].innerText = "王";
-    ban.rows[8].cells[5].innerText = "金";
-    ban.rows[8].cells[6].innerText = "銀";
-    ban.rows[8].cells[7].innerText = "桂";
-    ban.rows[8].cells[8].innerText = "香";
-
-    for (var x = 3; x < 9; x++) {
-        for (var y = 0; y < 9; y++) {
-            ban.rows[x].cells[y].style.transform = "rotate(0deg)"
-        }
-    }
-
-
-
-    //奥の駒
-    for(var x=0; x<9; x++){
-
-        ban.rows[2].cells[x].innerText = "歩";
-
-    }
-
-    ban.rows[1].cells[1].innerText = "飛";
-    ban.rows[1].cells[7].innerText = "角";
-    ban.rows[0].cells[0].innerText = "香";
-    ban.rows[0].cells[1].innerText = "桂";
-    ban.rows[0].cells[2].innerText = "銀";
-    ban.rows[0].cells[3].innerText = "金";
-    ban.rows[0].cells[4].innerText = "王";
-    ban.rows[0].cells[5].innerText = "金";
-    ban.rows[0].cells[6].innerText = "銀";
-    ban.rows[0].cells[7].innerText = "桂";
-    ban.rows[0].cells[8].innerText = "香";
-
-
-        //奥の駒を回転
-        for (var x = 0; x < 3; x++) {
-            for (var y = 0; y < 9; y++) {
-                ban.rows[x].cells[y].style.transform = "rotate(180deg)"
-            }
-        }
-        
-
-        //奥の持ち駒
-                for (var x = 0; x < 5; x++) {
-                    var tr = document.createElement("tr")
-                    ban1.appendChild(tr)
-                    for (var y = 0; y < 5; y++) {
+            for (var x = 0; x < 9; x++) {
+                var tr = document.createElement("tr")
+                ban.appendChild(tr)
+                for (var y = 0; y < 9; y++) {
                     var td = document.createElement("td")
                     tr.appendChild(td)
-                    }
-                    }
-        //奥の持ち駒を回転
-            
-        
-
-
-        //手前の持ち駒
-        for (var x = 0; x < 5; x++) {
-            var tr = document.createElement("tr")
-            ban2.appendChild(tr)
-            for (var y = 0; y < 5; y++) {
-            var td = document.createElement("td")
-            tr.appendChild(td)
-            }
-            }
-    
-    //click処理
-                    ban.onclick = function() {
-                        for (var x = 0; x < 9; x++) {
-                            for (var y = 0; y < 9; y++) {
-                                let tttt = event.target;
-                                if(ban.rows[x].cells[y]==tttt){
-                                    socket.emit("idid",x,y)
-                                    
-                                }
-                            }
-                        }
-                    }
-                    
-                    for (var i = 0; i < own_piece.length; i++) {
-                        own_piece[i].onclick = function () {
-                            for (var x = 0; x < 5; x++) {
-                                for (var y = 0; y < 5; y++) {
-                                let tttt = event.target;
-                                if(ban1.rows[x].cells[y]===tttt || ban2.rows[x].cells[y]===tttt){
-                                    socket.emit("own_piece",x,y,this.id)
-
-                                }
-                            }
-                        }
-    
-
-                        };
-                        }
-    //
-    
-    button.addEventListener("click",function(){
-        socket.emit("button")
-
-    })
-
-    button2.addEventListener("click",function(){
-        socket.emit("button2")
-    })
-
-
-
-
-                    
-                    
-                    //banから動かす処理
-                    socket.on("rrr", (idid,idid2)=>{
-                    click_step++
-
-                        if(click_step == 1){
-                            ban.rows[idid].cells[idid2].style.backgroundColor = '#CCFFFF';
-                            first_choice_piece=ban.rows[idid].cells[idid2];
-                
-            
-                        }
-            
-                        if(click_step ==2){
-                                console.log(first_choice_piece.id)
-                                get_check(ban.rows[idid].cells[idid2]);
-                                if(first_choice_piece.style.transform === "rotate(0deg)"||first_choice_piece.id === "field_td2"){
-                                    console.log("0度")
-                                    ban.rows[idid].cells[idid2].style.transform="rotate(0deg)";
-                
-                                }
-                                if(first_choice_piece.style.transform === "rotate(180deg)"||first_choice_piece.id === "field_td1"){
-                                    console.log("180度")
-                                    ban.rows[idid].cells[idid2].style.transform="rotate(180deg)";
-                
-                                }
-                                ban.rows[idid].cells[idid2].innerText=first_choice_piece.innerText;
-
-
-
-                            
-                            //成りの処理
-                            outer:
-                            if(first_choice_piece.style.transform === "rotate(0deg)"){
-                                for (var x = 0; x < 3; x++) {
-                                    for (var y = 0; y < 9; y++) {
-                                        if(ban.rows[idid].cells[idid2]===ban.rows[x].cells[y]&& !(first_choice_piece.style.color === "rgb(255, 0, 0)")
-                                        ||first_choice_piece===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")){
-                                            button = document.getElementById("button")
-                                            button2 = document.getElementById("button2")
-                                            button.innerText = "はい";
-                                            button2.innerText = "いいえ";
-                                            break outer;
-
-
-
-                                            
-                                        }
-                                        
-                                    }
-                                }
-
-                            }
-
-                            outer:
-                            if(first_choice_piece.style.transform === "rotate(180deg)"){
-                                for (var x = 6; x < 9; x++) {
-                                    for (var y = 0; y < 9; y++) {
-                                        if(ban.rows[idid].cells[idid2]===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")
-                                        ||first_choice_piece===ban.rows[x].cells[y]&&!(first_choice_piece.style.color === "rgb(255, 0, 0)")){
-                                                button = document.getElementById("button")
-                                                button2 = document.getElementById("button2")
-                                                button.innerText = "はい";
-                                                button2.innerText = "いいえ";
-                                                break outer;
-    
-                                            
-                                        }
-                                        
-                                    }
-                                }
-
-                            }
-                            //
-
-
-
-
-
-                            
-
-
-
-                            //選択された駒が成っている駒の場合は次の選択された駒は赤色
-                        if(first_choice_piece.style.color==="rgb(255, 0, 0)"){
-                                ban.rows[idid].cells[idid2].style.color = '#f00';
-                                first_choice_piece.style.color = "#000";
-
-                            }
-
-                            //共通処理
-                            saveonce = first_choice_piece.innerText;
-                            saveonce2 =ban.rows[idid].cells[idid2]
-                            first_choice_piece.innerText = "";
-                            first_choice_piece.style.backgroundColor = '#c84';
-                            //
-            
-                            click_step = 0;
-            
-                        }
-
-                })//socketの終わり
-
-
-                //成る関数
-                function naru(n){
-                    if(n==="歩"){
-                    return "と";
-
-                    }
-                    if(n==="飛"){
-                    return "龍";
-
-                    }
-
-                    if(n==="角"){
-                    return "竜";
-                    }
-
-                    return n
-                
                 }
+            }
 
-                //取得をチェックする関数
-                function get_check(g){
 
+            //手前の駒
+            for (var x = 0; x < 9; x++) {
+
+                ban.rows[6].cells[x].innerText = "歩";
+
+            }
+
+            ban.rows[7].cells[1].innerText = "角";
+            ban.rows[7].cells[7].innerText = "飛";
+            ban.rows[8].cells[0].innerText = "香";
+            ban.rows[8].cells[1].innerText = "桂";
+            ban.rows[8].cells[2].innerText = "銀";
+            ban.rows[8].cells[3].innerText = "金";
+            ban.rows[8].cells[4].innerText = "王";
+            ban.rows[8].cells[5].innerText = "金";
+            ban.rows[8].cells[6].innerText = "銀";
+            ban.rows[8].cells[7].innerText = "桂";
+            ban.rows[8].cells[8].innerText = "香";
+
+            for (var x = 3; x < 9; x++) {
+                for (var y = 0; y < 9; y++) {
+                    ban.rows[x].cells[y].style.transform = "rotate(0deg)"
+                }
+            }
+
+
+
+            //奥の駒
+            for (var x = 0; x < 9; x++) {
+
+                ban.rows[2].cells[x].innerText = "歩";
+
+            }
+
+            ban.rows[1].cells[1].innerText = "飛";
+            ban.rows[1].cells[7].innerText = "角";
+            ban.rows[0].cells[0].innerText = "香";
+            ban.rows[0].cells[1].innerText = "桂";
+            ban.rows[0].cells[2].innerText = "銀";
+            ban.rows[0].cells[3].innerText = "金";
+            ban.rows[0].cells[4].innerText = "王";
+            ban.rows[0].cells[5].innerText = "金";
+            ban.rows[0].cells[6].innerText = "銀";
+            ban.rows[0].cells[7].innerText = "桂";
+            ban.rows[0].cells[8].innerText = "香";
+
+
+            //奥の駒を回転
+            for (var x = 0; x < 3; x++) {
+                for (var y = 0; y < 9; y++) {
+                    ban.rows[x].cells[y].style.transform = "rotate(180deg)"
+                }
+            }
+
+
+            //奥の持ち駒
+            for (var x = 0; x < 5; x++) {
+                var tr = document.createElement("tr")
+                ban1.appendChild(tr)
+                for (var y = 0; y < 5; y++) {
+                    var td = document.createElement("td")
+                    tr.appendChild(td)
+                }
+            }
+            //奥の持ち駒を回転
+
+
+
+
+            //手前の持ち駒
+            for (var x = 0; x < 5; x++) {
+                var tr = document.createElement("tr")
+                ban2.appendChild(tr)
+                for (var y = 0; y < 5; y++) {
+                    var td = document.createElement("td")
+                    tr.appendChild(td)
+                }
+            }
+
+            //click処理
+            ban.onclick = function () {
+                for (var x = 0; x < 9; x++) {
+                    for (var y = 0; y < 9; y++) {
+                        let tttt = event.target;
+                        if (ban.rows[x].cells[y] == tttt) {
+                            socket.emit("idid", x, y)
+
+                        }
+                    }
+                }
+            }
+
+            for (var i = 0; i < own_piece.length; i++) {
+                own_piece[i].onclick = function () {
                     for (var x = 0; x < 5; x++) {
                         for (var y = 0; y < 5; y++) {
-                            if(!(g.innerText==="")){
-                                g.style.color = "#000";
-                                if(g.style.transform === "rotate(180deg)"){
-                                    if(ban2.rows[x].cells[y].innerText===""){
-                                        ban2.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
-                                        return;
-        
-                                    }
-        
+                            let tttt = event.target;
+                            if (ban1.rows[x].cells[y] === tttt || ban2.rows[x].cells[y] === tttt) {
+                                socket.emit("own_piece", x, y, this.id)
 
-                                }
+                            }
+                        }
+                    }
 
-                                if(g.style.transform === "rotate(0deg)"){
-                                    if(ban1.rows[x].cells[y].innerText===""){
-                                        ban1.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
-                                        return;
-        
-                                    }
-        
+
+                };
+            }
+            //
+
+            button.addEventListener("click", function () {
+                socket.emit("button")
+
+            })
+
+            button2.addEventListener("click", function () {
+                socket.emit("button2")
+            })
+
+
+
+
+
+
+            //banから動かす処理
+            socket.on("rrr", (idid, idid2) => {
+                click_step++
+
+                if (click_step == 1) {
+                    ban.rows[idid].cells[idid2].style.backgroundColor = '#CCFFFF';
+                    first_choice_piece = ban.rows[idid].cells[idid2];
+
+
+                }
+
+                if (click_step == 2) {
+                    console.log(first_choice_piece.id)
+                    get_check(ban.rows[idid].cells[idid2]);
+                    if (first_choice_piece.style.transform === "rotate(0deg)" || first_choice_piece.id === "field_td2") {
+                        console.log("0度")
+                        ban.rows[idid].cells[idid2].style.transform = "rotate(0deg)";
+
+                    }
+                    if (first_choice_piece.style.transform === "rotate(180deg)" || first_choice_piece.id === "field_td1") {
+                        console.log("180度")
+                        ban.rows[idid].cells[idid2].style.transform = "rotate(180deg)";
+
+                    }
+                    ban.rows[idid].cells[idid2].innerText = first_choice_piece.innerText;
+
+
+
+
+                    //成りの処理
+                    outer:
+                    if (first_choice_piece.style.transform === "rotate(0deg)") {
+                        for (var x = 0; x < 3; x++) {
+                            for (var y = 0; y < 9; y++) {
+                                if (ban.rows[idid].cells[idid2] === ban.rows[x].cells[y] && !(first_choice_piece.style.color === "rgb(255, 0, 0)")
+                                    || first_choice_piece === ban.rows[x].cells[y] && !(first_choice_piece.style.color === "rgb(255, 0, 0)")) {
+                                    button = document.getElementById("button")
+                                    button2 = document.getElementById("button2")
+                                    button.innerText = "はい";
+                                    button2.innerText = "いいえ";
+                                    break outer;
+
+
+
 
                                 }
 
                             }
                         }
-                    }
-                
-                
-                }//
-
-                function get_pieces_check(n){
-
-                    if(n==="と"){
-                        return n="歩"
-
-                    }
-                    if(n==="龍"){
-                        return n="飛"
-
-                    }
-                    if(n==="竜"){
-                        return n="角"
 
                     }
 
+                    outer:
+                    if (first_choice_piece.style.transform === "rotate(180deg)") {
+                        for (var x = 6; x < 9; x++) {
+                            for (var y = 0; y < 9; y++) {
+                                if (ban.rows[idid].cells[idid2] === ban.rows[x].cells[y] && !(first_choice_piece.style.color === "rgb(255, 0, 0)")
+                                    || first_choice_piece === ban.rows[x].cells[y] && !(first_choice_piece.style.color === "rgb(255, 0, 0)")) {
+                                    button = document.getElementById("button")
+                                    button2 = document.getElementById("button2")
+                                    button.innerText = "はい";
+                                    button2.innerText = "いいえ";
+                                    break outer;
 
 
-                    return n
+                                }
+
+                            }
+                        }
+
+                    }
+                    //
+
+
+
+
+
+
+
+
+
+                    //選択された駒が成っている駒の場合は次の選択された駒は赤色
+                    if (first_choice_piece.style.color === "rgb(255, 0, 0)") {
+                        ban.rows[idid].cells[idid2].style.color = '#f00';
+                        first_choice_piece.style.color = "#000";
+
+                    }
+
+                    //共通処理
+                    saveonce = first_choice_piece.innerText;
+                    saveonce2 = ban.rows[idid].cells[idid2]
+                    first_choice_piece.innerText = "";
+                    first_choice_piece.style.backgroundColor = '#c84';
+                    //
+
+                    click_step = 0;
+
+                }
+
+            })//socketの終わり
+
+
+            //成る関数
+            function naru(n) {
+                if (n === "歩") {
+                    return "と";
+
+                }
+                if (n === "飛") {
+                    return "龍";
+
+                }
+
+                if (n === "角") {
+                    return "竜";
+                }
+
+                return n
+
+            }
+
+            //取得をチェックする関数
+            function get_check(g) {
+
+                for (var x = 0; x < 5; x++) {
+                    for (var y = 0; y < 5; y++) {
+                        if (!(g.innerText === "")) {
+                            g.style.color = "#000";
+                            if (g.style.transform === "rotate(180deg)") {
+                                if (ban2.rows[x].cells[y].innerText === "") {
+                                    ban2.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
+                                    return;
+
+                                }
+
+
+                            }
+
+                            if (g.style.transform === "rotate(0deg)") {
+                                if (ban1.rows[x].cells[y].innerText === "") {
+                                    ban1.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
+                                    return;
+
+                                }
+
+
+                            }
+
+                        }
+                    }
+                }
+
+
+            }//
+
+            function get_pieces_check(n) {
+
+                if (n === "と") {
+                    return n = "歩"
+
+                }
+                if (n === "龍") {
+                    return n = "飛"
+
+                }
+                if (n === "竜") {
+                    return n = "角"
 
                 }
 
 
 
-                //持ち駒から使う処理
-                socket.on("own_piece_response",(x,y,own_piece_id)=>{
+                return n
 
-                    click_step++
+            }
 
-                    if(click_step===1){
 
-                        if(own_piece_id==="field_1"){
-                            ban1.rows[x].cells[y].style.backgroundColor = '#CCFFFF';
-                            ban1.rows[x].cells[y].id = "field_td1";
-                            first_choice_piece=ban1.rows[x].cells[y]
-                            console.log(first_choice_piece)
-    
-                        }
-                        if(own_piece_id==="field_2"){
-                            ban2.rows[x].cells[y].style.backgroundColor = '#CCFFFF';
-                            ban2.rows[x].cells[y].id = "field_td2";
-                            first_choice_piece=ban2.rows[x].cells[y]
-                            console.log(first_choice_piece)
-    
-                        }
-    
+
+            //持ち駒から使う処理
+            socket.on("own_piece_response", (x, y, own_piece_id) => {
+
+                click_step++
+
+                if (click_step === 1) {
+
+                    if (own_piece_id === "field_1") {
+                        ban1.rows[x].cells[y].style.backgroundColor = '#CCFFFF';
+                        ban1.rows[x].cells[y].id = "field_td1";
+                        first_choice_piece = ban1.rows[x].cells[y]
+                        console.log(first_choice_piece)
+
+                    }
+                    if (own_piece_id === "field_2") {
+                        ban2.rows[x].cells[y].style.backgroundColor = '#CCFFFF';
+                        ban2.rows[x].cells[y].id = "field_td2";
+                        first_choice_piece = ban2.rows[x].cells[y]
+                        console.log(first_choice_piece)
 
                     }
 
 
-                })
-
-                                        //ボタンをclickしたらなる処理
-
-                    socket.on("button_response",()=>{
-                        console.log(saveonce);
-                        console.log(saveonce2);
-                        saveonce2.innerText=naru(saveonce)
-                        saveonce2.style.color = '#f00';
-                        button.innerText = "";
-                        button2.innerText = "";
-                    })
+                }
 
 
+            })
 
-                    socket.on("button_response2",()=>{
-                        console.log("ぼたん削除")
-                        button.innerText = "";
-                        button2.innerText = "";
-                    })
-                
+            //ボタンをclickしたらなる処理
+
+            socket.on("button_response", () => {
+                console.log(saveonce);
+                console.log(saveonce2);
+                saveonce2.innerText = naru(saveonce)
+                saveonce2.style.color = '#f00';
+                button.innerText = "";
+                button2.innerText = "";
+            })
 
 
-                
-                </script>
+
+            socket.on("button_response2", () => {
+                console.log("ぼたん削除")
+                button.innerText = "";
+                button2.innerText = "";
+            })
 
 
-    
-    
-</body> 
+
+
+        </script>
+
+
+
+
+</body>
+
 </html>
