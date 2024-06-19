@@ -27,14 +27,14 @@
         writing-mode: horizontal-tb;
     }
 
-    #field_1 {
+    #field_2 {
         position: absolute;
         width: 200px;
         height: 150px;
-        float: left;
+        top: 300px;
     }
 
-    #field_1 td {
+    #field_2 td {
         border: 1px solid black;
         width: 10px;
         height: 10px;
@@ -47,7 +47,7 @@
         writing-mode: horizontal-tb;
     }
 
-    #field_2 {
+    #field_1 {
         position: absolute;
         width: 200px;
         height: 150px;
@@ -55,7 +55,7 @@
         top: 300px;
     }
 
-    #field_2 td {
+    #field_1 td {
         border: 1px solid black;
         width: 10px;
         height: 10px;
@@ -91,12 +91,12 @@
     <h1 id="h1">将棋で遊ぶばい</h1>
     <img src="/img/syougi2.jpg" alt="">
 
-    <div id="div_red">タイトルが赤色のplayer用</div>
+    <div id="div_red">空席(後攻)</div>
     <table id="field_1" class="own_piece">
     </table>
     <table id="field">
     </table>
-    <div id="div_black">タイトルが黒色のplayer用</div>
+    <div id="div_black">空席(後攻)</div>
     <table id="field_2" class="own_piece">
     </table>
     <button id="button"></button>
@@ -109,9 +109,9 @@
             // ページ読み込み完了後にサーバーにメッセージを送信
             socket.emit('page_loaded', { message: "<%= username %>" });
 
-            var ban = document.getElementById('field')
-            var My_ban1 = document.getElementById('field_1')
-            var My_ban2 = document.getElementById('field_2')
+            let ban = document.getElementById('field')
+            let My_ban1 = document.getElementById('field_1')
+            let My_ban2 = document.getElementById('field_2')
             //ボタンを定義
             let button
             let button2;
@@ -126,17 +126,21 @@
             let turn = 1;
 
 
+            //ログインしたときここが自分と相手の駒の見え方とタイトルの色が違う
             if (Number("<%= count %>") % 2 === 0) {
                 h1 = document.getElementById('h1')
                 h1.style.color = "#f00";
                 ban.style.transform = "rotate(180deg)"
 
-            } else {
+            }
+            if(Number("<%= count %>") % 2 === 1){
                 ban.style.transform = "rotate(0deg)"
             }
+            else {
+                ban.style.transform = "rotate(0deg)"
+            }
+            //
             let click_step = 0;
-            let tttt;
-
 
             // テーブルで盤面を作成する処理
             for (var x = 0; x < 9; x++) {
@@ -149,11 +153,8 @@
             }
             //手前の駒
             for (var x = 0; x < 9; x++) {
-
                 ban.rows[6].cells[x].innerText = "歩";
-
             }
-
             ban.rows[7].cells[1].innerText = "角";
             ban.rows[7].cells[7].innerText = "飛";
             ban.rows[8].cells[0].innerText = "香";
@@ -165,7 +166,7 @@
             ban.rows[8].cells[6].innerText = "銀";
             ban.rows[8].cells[7].innerText = "桂";
             ban.rows[8].cells[8].innerText = "香";
-
+            //0かいてん
             for (var x = 3; x < 9; x++) {
                 for (var y = 0; y < 9; y++) {
                     ban.rows[x].cells[y].style.transform = "rotate(0deg)"
@@ -176,7 +177,6 @@
             for (var x = 0; x < 9; x++) {
                 ban.rows[2].cells[x].innerText = "歩";
             }
-
             ban.rows[1].cells[1].innerText = "飛";
             ban.rows[1].cells[7].innerText = "角";
             ban.rows[0].cells[0].innerText = "香";
@@ -223,13 +223,13 @@
                 socket.emit("ban_click", x, y,turn)
             }
 
-            //持ち駒のクリック処理
+            //持ち駒のクリック処理(効率化に成功)
             own_piece[0].onclick = function () {
                 let x = event.target.parentNode.rowIndex;
                 let y = event.target.cellIndex;
                 socket.emit("own_piece", x, y, this.id,turn)
             };
-            //持ち駒のクリック処理
+            //持ち駒のクリック処理(効率化に成功)
             own_piece[1].onclick = function () {
                 let x = event.target.parentNode.rowIndex;
                 let y = event.target.cellIndex;
@@ -272,11 +272,11 @@
                     //行先のマスに駒があるかチェック
                     get_check(ban.rows[ban_x].cells[ban_y]);
                     //最初に選択された駒の角度が0度のときは次に選択されたマスは0度
-                    if (first_choice_piece.style.transform === "rotate(0deg)" || first_choice_piece.id === "field_td2") {
+                    if (first_choice_piece.style.transform === "rotate(0deg)" || first_choice_piece.id === "field_td1") {
                         ban.rows[ban_x].cells[ban_y].style.transform = "rotate(0deg)";
                     }
                     //最初に選択された駒の角度が180度のときは次に選択されたマスは180度
-                    if (first_choice_piece.style.transform === "rotate(180deg)" || first_choice_piece.id === "field_td1") {
+                    if (first_choice_piece.style.transform === "rotate(180deg)" || first_choice_piece.id === "field_td2") {
                         ban.rows[ban_x].cells[ban_y].style.transform = "rotate(180deg)";
                     }
                     ban.rows[ban_x].cells[ban_y].innerText = first_choice_piece.innerText;  //次の座標にコピー
@@ -377,8 +377,8 @@
                         //繰り返して自分の持ち駒を調べる処理
                         for (var x = 0; x < 5; x++) {
                             for (var y = 0; y < 5; y++) {
-                                if (My_ban2.rows[x].cells[y].innerText === "") {
-                                    My_ban2.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
+                                if (My_ban1.rows[x].cells[y].innerText === "") {
+                                    My_ban1.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
                                     return;
                                 }
                             }
@@ -387,8 +387,8 @@
                     if (g.style.transform === "rotate(0deg)") {
                         for (var x = 0; x < 5; x++) {
                             for (var y = 0; y < 5; y++) {
-                                if (My_ban1.rows[x].cells[y].innerText === "") {
-                                    My_ban1.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
+                                if (My_ban2.rows[x].cells[y].innerText === "") {
+                                    My_ban2.rows[x].cells[y].innerText = get_pieces_check(g.innerText);
                                     return;
                                 }
                             }
