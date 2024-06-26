@@ -107,7 +107,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const socket = io();
             // ページ読み込み完了後にサーバーにメッセージを送信
-            socket.emit('page_loaded', { message: "<%= username %>" });
+            socket.emit('page_loaded_username', { message: "<%= username %>" });
 
             let ban = document.getElementById('field')
             let My_ban1 = document.getElementById('field_1')
@@ -132,9 +132,6 @@
                 h1.style.color = "#f00";
                 ban.style.transform = "rotate(180deg)"
 
-            }
-            if(Number("<%= count %>") % 2 === 1){
-                ban.style.transform = "rotate(0deg)"
             }
             else {
                 ban.style.transform = "rotate(0deg)"
@@ -220,20 +217,20 @@
             ban.onclick = function () {
                 let x = event.target.parentNode.rowIndex;
                 let y = event.target.cellIndex;
-                socket.emit("ban_click", x, y,turn)
+                socket.emit("ban_click", x, y, turn)
             }
 
             //持ち駒のクリック処理(効率化に成功)
             own_piece[0].onclick = function () {
                 let x = event.target.parentNode.rowIndex;
                 let y = event.target.cellIndex;
-                socket.emit("own_piece", x, y, this.id,turn)
+                socket.emit("own_piece", x, y, this.id, turn)
             };
             //持ち駒のクリック処理(効率化に成功)
             own_piece[1].onclick = function () {
                 let x = event.target.parentNode.rowIndex;
                 let y = event.target.cellIndex;
-                socket.emit("own_piece", x, y, this.id,turn)
+                socket.emit("own_piece", x, y, this.id, turn)
             };
 
             //
@@ -248,12 +245,12 @@
             })
             //フォームのデータを受け取る
             socket.on("formdata", (formnames) => {
-                formnames.forEach((formname)=>{
+                formnames.forEach((formname) => {
                     clientcount++
-                    if(clientcount % 2 === 0){
+                    if (clientcount % 2 === 0) {
                         let div_red = document.getElementById("div_red")
                         div_red.innerText = `${formname}(後攻)の持ち駒だよ!!`
-                    }else{
+                    } else {
                         let div_black = document.getElementById("div_black")
                         div_black.innerText = `${formname}(先行)の持ち駒だよ!!`
                     }
@@ -342,7 +339,7 @@
                     first_choice_piece.innerText = "";
                     first_choice_piece.style.backgroundColor = '#c84';
                     first_choice_piece.style.border = 'none';
-                    turn = turn%2
+                    turn = turn % 2
                     turn++
                     //
 
@@ -444,8 +441,21 @@
                 button.style.display = 'none';
                 button2.style.display = 'none';
             })
+            socket.on("discon", () => {
+                alert("ほかのプレイヤーが離脱されました!3秒後にリダイレクトします!")
+                setTimeout(() => {
+                    redirectfnc();
+                }, 3000);
 
+            })
+
+            function redirectfnc() {
+                window.location.href = '/'; // ここにリダイレクト先のURLを指定
+            }
         });
+
+
+
 
     </script>
 </body>

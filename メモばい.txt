@@ -1,0 +1,30 @@
+        exec('echo "User disconnected"', (error, stdout, stderr) => {
+            console.log("コマンド実行");
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`); // コマンドの出力結果をログに出力
+            if (stderr) {
+                console.error(`stderr: ${stderr}`);
+            }
+        });
+
+
+
+
+        fs.appendFileSync(filepath, '// \n', 'utf8', (err) => {
+            if (err) throw err;
+            console.log('The "app.js" was updated to trigger nodemon restart!');
+        });
+
+
+
+
+        // countの更新
+        playercount--;
+        namesave.splice(playerData[socket.id] - 1, 1);
+        // playerDataから該当のsocket.idを削除
+        delete playerData[socket.id];
+
+
