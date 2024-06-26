@@ -1,14 +1,10 @@
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
-const { exec } = require('child_process'); // いったんはしようしないかも
-const fs = require('fs');
-const path = require('path');
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
 
-const filepath = 'C:\\Users\\倉石　力斗\\Documents\\将棋する奴_バックアップ\\app.js';
 let count = 0;      //ゲームのカウント
 let playercount = 0;    //playerのcount
 
@@ -70,12 +66,20 @@ io.on('connection', function (socket) {
     })
     //ページが閉じられたり、戻ったりすると下記を実行
     socket.on('disconnect', function () {
-        console.log("別のページに行っても実行されてるのかな？")
         io.emit("discon");
-        const now = new Date();
-        fs.utimesSync(filepath, now, now);
+        resetServerState();
     });
 })
+
+//リセット
+function resetServerState() {
+    //すべてリセット
+    count = 0;
+    playercount = 0;
+    namesave = [];
+    playerData = {};
+}
+
 
 //ミドルウェアの設定
 app.use(express.static('public'));
