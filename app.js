@@ -19,7 +19,7 @@ io.on('connection', function (socket) {
     if (playercount == 2) {
         playerData[socket.id] = 2
     }
-    //こちらは観戦用
+    //こちらは観戦用ばい(笑)
     if (playercount > 2) {
         playerData[socket.id] = 3
     }
