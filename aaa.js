@@ -15,5 +15,6 @@ function createCounter() {
   console.log(counter()); // 3
   console.log(counter()); // 1
   console.log(counter()); // 1
+  console.log(counter()); // 1
 
   
